@@ -28,9 +28,7 @@ public class Game : MonoBehaviour {
 		
 	}
 
-    void UpdateGrid() {
-        
-    }
+
 
     //public bool CheckInGrid(Vector3 position) {
     //    return ((int)position.x >= 0 && (int)position.x < width && (int)position.y >= 0);
