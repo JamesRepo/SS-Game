@@ -5,8 +5,8 @@ using UnityEngine.UI;
 
 public class Grid : MonoBehaviour {
 
-    private const int gridHeight = 20;
-    private const int gridWidth = 10;
+    private const int gridHeight = 10;
+    private const int gridWidth = 5;
 
     public static Transform [,,] gameArea = new Transform [gridWidth, gridHeight, gridWidth];
 
@@ -32,43 +32,6 @@ public class Grid : MonoBehaviour {
     }
 
 
-    public static void DeleteFullRows() {
-        for (int yPos = 0; yPos < gridHeight; ++yPos) {
-            if(CheckRow(yPos)) {
-                DeleteRow(yPos);
-                DropAllRows(yPos + 1);
-                --yPos;
-            }
-        }
-    }
-
-
-    public static void DeleteFullX() {
-        for (int yPos = 0; yPos < gridHeight; ++yPos) {
-            for (int zPos = 0; zPos < gridWidth; ++zPos) {
-                if (CheckRowX(yPos, zPos)) {
-                    DeleteRowX(yPos, zPos);
-                    DropAllRows(yPos + 1);
-                    --yPos;
-                }
-            }
-        }
-    }
-
-    public static void DeleteFullZ() {
-        for (int yPos = 0; yPos < gridHeight; ++yPos) {
-            for (int xPos = 0; xPos < gridWidth; ++xPos) {
-                if (CheckRowZ(yPos, xPos)) {
-                    DeleteRowZ(yPos, xPos);
-                    DropAllRows(yPos + 1);
-                    --yPos;
-                }
-            }
-        }
-    }
-
-
-
 
     // Check row to delete whole bottom 
     public static bool CheckRow(int yPos) {
@@ -85,6 +48,7 @@ public class Grid : MonoBehaviour {
     // Check row to delete one row
     public static bool CheckRowX(int yPos, int zPos) {
         for (int xPos = 0; xPos < gridWidth; ++xPos) {
+            Debug.Log("Posx:" + xPos + ", Posy:" + yPos + ", Posz:" + zPos);
             if (gameArea[xPos, yPos, zPos] == null) {
                 return false;
             } 
@@ -131,6 +95,43 @@ public class Grid : MonoBehaviour {
 
 
 
+    public static void DeleteFullRows() {
+        for (int yPos = 0; yPos < gridHeight; ++yPos) {
+            if (CheckRow(yPos)) {
+                DeleteRow(yPos);
+                DropAllRows(yPos + 1);
+                --yPos;
+            }
+        }
+    }
+
+
+    public static void DeleteFullX() {
+        for (int yPos = 0; yPos < gridHeight; ++yPos) {
+            for (int zPos = 0; zPos < gridWidth; ++zPos) {
+                if (CheckRowX(yPos, zPos)) {
+                    DeleteRowX(yPos, zPos);
+                    DropAllRows(yPos + 1);
+                    if (yPos > 0) {
+                        --yPos;
+                    }
+                }
+            }
+        }
+    }
+
+    public static void DeleteFullZ() {
+        for (int yPos = 0; yPos < gridHeight; ++yPos) {
+            for (int xPos = 0; xPos < gridWidth; ++xPos) {
+                if (CheckRowZ(yPos, xPos)) {
+                    DeleteRowZ(yPos, xPos);
+                    DropAllRows(yPos + 1);
+                    --yPos;
+                }
+            }
+        }
+    }
+
     public static void DropRow(int yPos) {
         for (int xPos = 0; xPos < gridWidth; ++xPos) {
             for (int zPos = 0; zPos < gridWidth; ++zPos) {
@@ -147,9 +148,39 @@ public class Grid : MonoBehaviour {
         }
     }
 
+
+
+    public static void DropRowX(int yPos, int zPos) {
+        for (int xPos = 0; xPos < gridWidth; ++xPos) {
+                if (gameArea[xPos, yPos, zPos] != null) {
+                    gameArea[xPos, yPos - 1, zPos] = gameArea[xPos, yPos, zPos];
+                    gameArea[xPos, yPos, zPos] = null;
+                    gameArea[xPos, yPos - 1, zPos].position += new Vector3(0, -1, 0);
+            }
+        }
+    }
+
+    public static void DropRowZ(int yPos, int xPos) {
+        for (int zPos = 0; zPos < gridWidth; ++zPos) {
+            if (gameArea[xPos, yPos, zPos] != null) {
+                gameArea[xPos, yPos - 1, zPos] = gameArea[xPos, yPos, zPos];
+                gameArea[xPos, yPos, zPos] = null;
+                gameArea[xPos, yPos - 1, zPos].position += new Vector3(0, -1, 0);
+            }
+        }
+    }
+
+
+
     public static void DropAllRows(int yPos) {
         for (int i = yPos; i < gridHeight; ++i) {
-            DropRow(yPos);
+            DropRow(i);
+        }
+    }
+
+    public static void DropAllRowsX(int yPos, int zPos) {
+        for (int i = yPos; i < gridHeight; ++i) {
+            DropRowX(i, zPos);
         }
     }
 

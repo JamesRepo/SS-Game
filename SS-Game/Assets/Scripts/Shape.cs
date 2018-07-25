@@ -1,20 +1,26 @@
 ﻿using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
+using UnityEngine.UI;
 
 public class Shape : MonoBehaviour {
     private float fall = 0;
     public float fallSpeed = 1;
 
-    public int grid = 10;
+    private const int gridHeight = 10;
+    private const int gridWidth = 5;
 
     private Vector3 position;
 
     public Cell[] shapeCells = new Cell[4];
 
+    public Button left, right, up, down;
 
-	// Use this for initialization
-	void Start () {
+    //  private Button rightButton = GameObject.Find("buttonName").GetComponent<UnityEngine.UI.Button>();
+
+
+    // Use this for initialization
+    void Start () {
 		
 	}
 
@@ -86,10 +92,11 @@ public class Shape : MonoBehaviour {
                 UpdateGrid();
             }
             else {
+                Debug.Log("Posx:" + transform.position.x + ", Posy:" + transform.position.y + ", Posz:" + transform.position.z);
                 transform.position += new Vector3(0, 1, 0);
                 Grid.DeleteFullRows();
-              //  Grid.DeleteFullX();
-              //  Grid.DeleteFullZ();
+               // Grid.DeleteFullX();
+               // Grid.DeleteFullZ();
                 NewShape();
             }
         }
@@ -153,21 +160,25 @@ public class Shape : MonoBehaviour {
 
     // Updates the game board
     public void UpdateGrid() {
-        for (int x = 0; x < grid; ++x) {
-            for (int y = 0; y < grid; ++y) {
-                for (int z = 0; z < grid; ++z) {
+        for (int x = 0; x < gridWidth; ++x) {
+            for (int y = 0; y < gridHeight; ++y) {
+                for (int z = 0; z < gridWidth; ++z) {
+                    
                     if (Grid.gameArea[x, y, z] != null && Grid.gameArea[x, y, z].parent == transform) {
                         Grid.gameArea[x, y, z] = null;
                     }
                 }
             }
         }
-        foreach(Transform cell in transform) {
+        foreach (Transform cell in transform) {
             Vector3 vPos = Grid.RoundPosition(cell.position);
-                Grid.gameArea[(int)vPos.x, (int)vPos.y, (int)vPos.z] = cell;
-                Debug.Log("Cube at:" + vPos.x + " " + vPos.y + " " + vPos.z);
+            Grid.gameArea[(int)vPos.x, (int)vPos.y, (int)vPos.z] = cell;
+         //   Debug.Log("Cube at:" + vPos.x + " " + vPos.y + " " + vPos.z);
         }
-
-
     }
+
+ 
+
+
+
 }

@@ -5,19 +5,19 @@ using UnityEngine;
 
 public class Game : MonoBehaviour {
     
-    private GameObject nextCube;
-    private const int gridWidth = 10;
+  //  private GameObject nextCube;
+   // private const int gridWidth = 10;
 
 
-    private string[] shapeList = new string[] { "ShapeJ", "ShapeL", "ShapeLong", "ShapeS", "ShapeSquare", "ShapeT", "ShapeZ" };
+    private string[] shapeList = new string[] { "ShapeJ", "ShapeL", "ShapeSmall", "ShapeS", "ShapeSquare", "ShapeT", "ShapeZ" };
 
-    private Cell[] gridCells = new Cell[gridWidth];
+  //  private Cell[] gridCells = new Cell[gridWidth];
 
-    private GameObject[] gameCells = new GameObject[gridWidth];
+  //  private GameObject[] gameCells = new GameObject[gridWidth];
 	// Use this for initialization
 	void Start () {
         SpawnNewCube();
-
+        Grid gameGrid = new Grid();
 	}
 	
 	// Update is called once per frame
@@ -36,7 +36,7 @@ public class Game : MonoBehaviour {
         // Instansitates a new cube, selected randomly.
         // It is cast as a Game Object
         // Instansiate allows us to load a shape that is in the resources folder
-        GameObject nextShape = (GameObject)Instantiate(Resources.Load(shapeList[4]), new Vector3(5, 10, 5), Quaternion.identity);
+        GameObject nextShape = (GameObject)Instantiate(Resources.Load(shapeList[shapeSelection]), new Vector3(2, 8, 2), Quaternion.identity);
     }
 
 
