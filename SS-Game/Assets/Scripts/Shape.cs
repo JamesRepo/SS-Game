@@ -7,7 +7,7 @@ public class Shape : MonoBehaviour {
     private float fall = 0;
     public float fallSpeed = 1;
 
-    private const int gridHeight = 10;
+    private const int gridHeight = 15;
     private const int gridWidth = 5;
 
     private Vector3 position;
@@ -135,7 +135,7 @@ public class Shape : MonoBehaviour {
 
 
     // Checks if a new shape can be instansiated
-    void NewShape() {
+    public void NewShape() {
         // cast as an integer as the position is a float by default
        // if ((int)transform.position.y == 0) {
             enabled = false;
@@ -178,6 +178,70 @@ public class Shape : MonoBehaviour {
     }
 
  
+    public void MoveShape(string control)
+    {
+        // Right arrow pressed - block moves +1 on the X axis
+        if (control == "Right")
+        {
+            transform.position += new Vector3(1, 0, 0);
+            if (CheckShape())
+            {
+                UpdateGrid();
+            }
+            else
+            {
+                transform.position += new Vector3(-1, 0, 0);
+            }
+        }
+        
+
+        // Left arrow is pressed - block moves -1 on the X axis
+        else if (control == "Left")
+        {
+            transform.position += new Vector3(-1, 0, 0);
+            if (CheckShape())
+            {
+                UpdateGrid();
+            }
+            else
+            {
+                transform.position += new Vector3(1, 0, 0);
+            }
+        }
+
+
+        // Down arrow is pressed - block moves +1 on the Z axis
+        else if (control == "Down")
+        {
+            transform.position += new Vector3(0, 0, -1);
+            if (CheckShape())
+            {
+                UpdateGrid();
+            }
+            else
+            {
+                transform.position += new Vector3(0, 0, 1);
+            }
+        }
+
+
+        // Up arrow is pressed - block moves -1 on the Z axis
+        else if (control == "Up")
+        {
+            transform.position += new Vector3(0, 0, 1);
+            if (CheckShape())
+            {
+                UpdateGrid();
+            }
+            else
+            {
+                transform.position += new Vector3(0, 0, -1);
+            }
+        }
+
+
+
+    }
 
 
 

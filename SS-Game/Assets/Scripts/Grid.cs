@@ -5,7 +5,7 @@ using UnityEngine.UI;
 
 public class Grid : MonoBehaviour {
 
-    private const int gridHeight = 10;
+    private const int gridHeight = 15;
     private const int gridWidth = 5;
 
     public static Transform [,,] gameArea = new Transform [gridWidth, gridHeight, gridWidth];
@@ -48,7 +48,7 @@ public class Grid : MonoBehaviour {
     // Check row to delete one row
     public static bool CheckRowX(int yPos, int zPos) {
         for (int xPos = 0; xPos < gridWidth; ++xPos) {
-            Debug.Log("Posx:" + xPos + ", Posy:" + yPos + ", Posz:" + zPos);
+          //  Debug.Log("Posx:" + xPos + ", Posy:" + yPos + ", Posz:" + zPos);
             if (gameArea[xPos, yPos, zPos] == null) {
                 return false;
             } 

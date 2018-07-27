@@ -400,7 +400,6 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   fallSpeed: 1
-  grid: 10
   shapeCells:
   - {fileID: 114680432488308174}
   - {fileID: 0}

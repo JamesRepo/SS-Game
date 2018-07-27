@@ -2,12 +2,33 @@
 using System.Collections.Generic;
 using UnityEngine;
 
-public class Buttons : MonoBehaviour {
+public class UI : MonoBehaviour {
 
-    public Shape shape;
+   
+
+	// Use this for initialization
+	void Start () {
+		
+	}
+	
+	// Update is called once per frame
+	void Update () {
+     //   shape = shape.GetComponent<Shape>();
+	}
+
+    public static void GetShape(Shape s) {
+        
+    }
+
 
     public void UserInput(string action)
     {
+        
+
+        Shape shape = FindObjectOfType<Game>().nextShape.GetComponent<Shape>();
+
+
+
         // Right arrow pressed - block moves +1 on the X axis
         if (action == "Right")
         {
@@ -41,7 +62,15 @@ public class Buttons : MonoBehaviour {
         // Down arrow is pressed - block moves +1 on the Z axis
         else if (action == "Down")
         {
-            FindObjectOfType<Shape>().MoveShape("Down");
+            shape.transform.position += new Vector3(0, 0, -1);
+            if (shape.CheckShape())
+            {
+                shape.UpdateGrid();
+            }
+            else
+            {
+                shape.transform.position += new Vector3(0, 0, 1);
+            }
         }
 
 
@@ -59,66 +88,59 @@ public class Buttons : MonoBehaviour {
             }
         }
 
-
-        // Space key is pressed - block moves -1 on the Y axis
-        // This statement also includes a timer to make the block fall without user input
         else if (action == "Drop")
         {
             shape.transform.position += new Vector3(0, -1, 0);
-
             if (shape.CheckShape())
             {
                 shape.UpdateGrid();
             }
             else
             {
-                
                 shape.transform.position += new Vector3(0, 1, 0);
-                Grid.DeleteFullRows();
-                // Grid.DeleteFullX();
-                // Grid.DeleteFullZ();
-                shape.NewShape();
             }
         }
 
 
-        //// Rotation 
-        //else if (Input.GetKeyDown(KeyCode.Q))
-        //{
-        //    shape.transform.Rotate(0, 90, 0);
-        //    if (shape.CheckShape())
-        //    {
-        //        shape.UpdateGrid();
-        //    }
-        //    else
-        //    {
-        //        shape.transform.Rotate(0, -90, 0);
-        //    }
-        //}
-        //else if (Input.GetKeyDown(KeyCode.W))
-        //{
-        //    shape.transform.Rotate(90, 0, 0);
-        //    if (shape.CheckShape())
-        //    {
-        //        shape.UpdateGrid();
-        //    }
-        //    else
-        //    {
-        //        shape.transform.Rotate(-90, 0, 0);
-        //    }
-        //}
-        //else if (Input.GetKeyDown(KeyCode.E))
-        //{
-        //    shape.transform.Rotate(0, 0, 90);
-        //    if (shape.CheckShape())
-        //    {
-        //        shape.UpdateGrid();
-        //    }
-        //    else
-        //    {
-        //        shape.transform.Rotate(0, 0, -90);
-        //    }
-        //}
-    }
+        // Rotation 
+        else if (action == "RotX")
+        {
+            shape.transform.Rotate(0, 90, 0);
+            if (shape.CheckShape())
+            {
+                shape.UpdateGrid();
+            }
+            else
+            {
+                shape.transform.Rotate(0, -90, 0);
+            }
+        }
+        else if (action == "RotY")
+        {
+            shape.transform.Rotate(90, 0, 0);
+            if (shape.CheckShape())
+            {
+                shape.UpdateGrid();
+            }
+            else
+            {
+                shape.transform.Rotate(-90, 0, 0);
+            }
+        }
+        else if (action == "RotZ")
+        {
+            shape.transform.Rotate(0, 0, 90);
+            if (shape.CheckShape())
+            {
+                shape.UpdateGrid();
+            }
+            else
+            {
+                shape.transform.Rotate(0, 0, -90);
+            }
+        }
 
+
+
+    }
 }

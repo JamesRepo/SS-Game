@@ -4,9 +4,10 @@ using System.Collections.Generic;
 using UnityEngine;
 
 public class Game : MonoBehaviour {
-    
-  //  private GameObject nextCube;
-   // private const int gridWidth = 10;
+
+    public GameObject nextShape;
+    // private const int gridWidth = 10;
+    public Shape newShap;
 
 
     private string[] shapeList = new string[] { "ShapeJ", "ShapeL", "ShapeSmall", "ShapeS", "ShapeSquare", "ShapeT", "ShapeZ" };
@@ -36,7 +37,7 @@ public class Game : MonoBehaviour {
         // Instansitates a new cube, selected randomly.
         // It is cast as a Game Object
         // Instansiate allows us to load a shape that is in the resources folder
-        GameObject nextShape = (GameObject)Instantiate(Resources.Load(shapeList[shapeSelection]), new Vector3(2, 8, 2), Quaternion.identity);
+        nextShape = (GameObject)Instantiate(Resources.Load(shapeList[shapeSelection]), new Vector3(2, 12, 2), Quaternion.identity);
     }
 
 
