@@ -10,15 +10,15 @@ public class Game : MonoBehaviour {
     public Shape newShap;
 
 
-    private string[] shapeList = new string[] { "ShapeJ", "ShapeL", "ShapeSmall", "ShapeS", "ShapeSquare", "ShapeT", "ShapeZ" };
+    //private string[] shapeList = new string[] { "ShapeJ", "ShapeL", "ShapeSmall", "ShapeS", "ShapeSquare", "ShapeT", "ShapeZ" };
 
   //  private Cell[] gridCells = new Cell[gridWidth];
 
   //  private GameObject[] gameCells = new GameObject[gridWidth];
 	// Use this for initialization
 	void Start () {
-        SpawnNewCube();
-        Grid gameGrid = new Grid();
+       // ShapeCreator creator = new ShapeCreator();
+       // creator.CreateShape();
 	}
 	
 	// Update is called once per frame
@@ -27,18 +27,18 @@ public class Game : MonoBehaviour {
 	}
 
 
-    /*
-     * Method for spawning a new cube.
-     * 
-     */
-    public void SpawnNewCube() {
-        // New variable that stores a random number to select a random shape from the array
-        int shapeSelection = Random.Range(0, shapeList.Length);
-        // Instansitates a new cube, selected randomly.
-        // It is cast as a Game Object
-        // Instansiate allows us to load a shape that is in the resources folder
-        nextShape = (GameObject)Instantiate(Resources.Load(shapeList[shapeSelection]), new Vector3(2, 12, 2), Quaternion.identity);
-    }
+    ///*
+    // * Method for spawning a new cube.
+    // * 
+    // */
+    //public void SpawnNewCube() {
+    //    // New variable that stores a random number to select a random shape from the array
+    //    int shapeSelection = Random.Range(0, shapeList.Length);
+    //    // Instansitates a new cube, selected randomly.
+    //    // It is cast as a Game Object
+    //    // Instansiate allows us to load a shape that is in the resources folder
+    //    nextShape = (GameObject)Instantiate(Resources.Load(shapeList[shapeSelection]), new Vector3(2, 12, 2), Quaternion.identity);
+    //}
 
 
 }

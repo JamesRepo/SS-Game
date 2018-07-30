@@ -13,7 +13,7 @@ public class UI : MonoBehaviour {
 	
 	// Update is called once per frame
 	void Update () {
-     //   shape = shape.GetComponent<Shape>();
+        
 	}
 
     public static void GetShape(Shape s) {
@@ -25,122 +25,47 @@ public class UI : MonoBehaviour {
     {
         
 
-        Shape shape = FindObjectOfType<Game>().nextShape.GetComponent<Shape>();
+        Shape shape = FindObjectOfType<ShapeCreator>().nextShape.GetComponent<Shape>();
 
 
 
         // Right arrow pressed - block moves +1 on the X axis
-        if (action == "Right")
-        {
-            shape.transform.position += new Vector3(1, 0, 0);
-            if (shape.CheckShape())
-            {
-                shape.UpdateGrid();
-            }
-            else
-            {
-                shape.transform.position += new Vector3(-1, 0, 0);
-            }
+        if (action == "Right") {
+            shape.MoveRight();
         }
 
 
         // Left arrow is pressed - block moves -1 on the X axis
-        else if (action == "Left")
-        {
-            shape.transform.position += new Vector3(-1, 0, 0);
-            if (shape.CheckShape())
-            {
-                shape.UpdateGrid();
-            }
-            else
-            {
-                shape.transform.position += new Vector3(1, 0, 0);
-            }
+        else if (action == "Left") {
+            shape.MoveLeft();
         }
 
 
         // Down arrow is pressed - block moves +1 on the Z axis
-        else if (action == "Down")
-        {
-            shape.transform.position += new Vector3(0, 0, -1);
-            if (shape.CheckShape())
-            {
-                shape.UpdateGrid();
-            }
-            else
-            {
-                shape.transform.position += new Vector3(0, 0, 1);
-            }
+        else if (action == "Down") {
+            shape.MoveDown();
         }
 
 
         // Up arrow is pressed - block moves -1 on the Z axis
-        else if (action == "Up")
-        {
-            shape.transform.position += new Vector3(0, 0, 1);
-            if (shape.CheckShape())
-            {
-                shape.UpdateGrid();
-            }
-            else
-            {
-                shape.transform.position += new Vector3(0, 0, -1);
-            }
+        else if (action == "Up") {
+            shape.MoveUp();
         }
 
-        else if (action == "Drop")
-        {
-            shape.transform.position += new Vector3(0, -1, 0);
-            if (shape.CheckShape())
-            {
-                shape.UpdateGrid();
-            }
-            else
-            {
-                shape.transform.position += new Vector3(0, 1, 0);
-            }
+        // Drop
+        else if (action == "Drop"){
+            shape.Drop();
         }
-
 
         // Rotation 
-        else if (action == "RotX")
-        {
-            shape.transform.Rotate(0, 90, 0);
-            if (shape.CheckShape())
-            {
-                shape.UpdateGrid();
-            }
-            else
-            {
-                shape.transform.Rotate(0, -90, 0);
-            }
+        else if (action == "RotX") {
+            shape.RotateX();
         }
-        else if (action == "RotY")
-        {
-            shape.transform.Rotate(90, 0, 0);
-            if (shape.CheckShape())
-            {
-                shape.UpdateGrid();
-            }
-            else
-            {
-                shape.transform.Rotate(-90, 0, 0);
-            }
+        else if (action == "RotY") {
+            shape.RotateY();
         }
-        else if (action == "RotZ")
-        {
-            shape.transform.Rotate(0, 0, 90);
-            if (shape.CheckShape())
-            {
-                shape.UpdateGrid();
-            }
-            else
-            {
-                shape.transform.Rotate(0, 0, -90);
-            }
+        else if (action == "RotZ") {
+            shape.RotateZ();
         }
-
-
-
     }
 }

@@ -3,145 +3,119 @@ using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.UI;
 
-public class Shape : MonoBehaviour {
-    private float fall = 0;
-    public float fallSpeed = 1;
+/*
+ * ==== Shape ====
+ * ---------------
+ * This class is attached to the shapes which are used in the game.
+ * It contains methods to control the movement and rotation of the shape, 
+ * as well as methods which check the shape is in the game area and update 
+ * the three-dimensional array with the shape's position.
+ * 
+ */
 
+public class Shape : MonoBehaviour {
+
+    /*
+     *
+     * ==== Variables ====
+     * 
+     */
+
+    private float fall = 0;
+    private float fallSpeed = 1;
     private const int gridHeight = 15;
     private const int gridWidth = 5;
+    private Vector3 vectorPosition;
 
-    private Vector3 position;
+    /*
+     * 
+     * ==== Constructor ====
+     * 
+     */
 
-    public Cell[] shapeCells = new Cell[4];
+    public Shape() {}
 
-    public Button left, right, up, down;
+    /*
+     * 
+     * ==== Unity Functions ====
+     * 
+     */
 
-    //  private Button rightButton = GameObject.Find("buttonName").GetComponent<UnityEngine.UI.Button>();
-
-
-    // Use this for initialization
     void Start () {
 		
 	}
-
-    // Update is called once per frame
-    void Update()
-    {
-        CheckuserInput();
+    void Update() {
+        CheckUserInput();
     }
+
+    /*
+     * 
+     * ==== Methods ====
+     *
+     */
+
+
     /* 
      * Method used to detect User input and perform the relevant action.
      * These relevant actions are to move the block or rotate it. 
      * These actions are performed on the downward press of a key by the user. 
      */
-    void CheckuserInput() {
+    void CheckUserInput() {
         // Right arrow pressed - block moves +1 on the X axis
         if (Input.GetKeyDown(KeyCode.RightArrow)) {
-            transform.position += new Vector3(1, 0, 0);
-            if (CheckShape()) {
-                UpdateGrid();
-            }
-            else {
-                transform.position += new Vector3(-1, 0, 0);
-            }
+            MoveRight();
         }
 
 
         // Left arrow is pressed - block moves -1 on the X axis
         else if (Input.GetKeyDown(KeyCode.LeftArrow)) {
-            transform.position += new Vector3(-1, 0, 0);
-            if (CheckShape()) {
-                UpdateGrid();
-            }
-            else {
-                transform.position += new Vector3(1, 0, 0);
-            }
+            MoveLeft();
         }
 
 
         // Down arrow is pressed - block moves +1 on the Z axis
         else if (Input.GetKeyDown(KeyCode.DownArrow)) {
-            transform.position += new Vector3(0, 0, -1);
-            if (CheckShape()) {
-                UpdateGrid();
-            }
-            else {
-                transform.position += new Vector3(0, 0, 1);
-            }
+            MoveDown();
         }
 
 
         // Up arrow is pressed - block moves -1 on the Z axis
         else if (Input.GetKeyDown(KeyCode.UpArrow)) {
-            transform.position += new Vector3(0, 0, 1);
-            if (CheckShape()) {
-                UpdateGrid();
-            }
-            else {
-                transform.position += new Vector3(0, 0, -1);
-            }
+            MoveUp();
         }
 
 
         // Space key is pressed - block moves -1 on the Y axis
         // This statement also includes a timer to make the block fall without user input
         else if (Input.GetKeyDown(KeyCode.Space) || Time.time - fall >= fallSpeed) {
-            transform.position += new Vector3(0, -1, 0);
             fall = Time.time;
-            if (CheckShape()) {
-                UpdateGrid();
-            }
-            else {
-                Debug.Log("Posx:" + transform.position.x + ", Posy:" + transform.position.y + ", Posz:" + transform.position.z);
-                transform.position += new Vector3(0, 1, 0);
-                Grid.DeleteFullRows();
-               // Grid.DeleteFullX();
-               // Grid.DeleteFullZ();
-                NewShape();
-            }
+            Drop();
         }
 
 
         // Rotation 
         else if (Input.GetKeyDown(KeyCode.Q)) {
-            transform.Rotate(0, 90, 0);
-            if (CheckShape()){
-                UpdateGrid();
-            }
-            else {
-                transform.Rotate(0, -90, 0);
-            }
+            RotateX();
         }
         else if (Input.GetKeyDown(KeyCode.W)) {
-            transform.Rotate(90, 0, 0);
-            if (CheckShape()) {
-                UpdateGrid();
-            }
-            else {
-                transform.Rotate(-90, 0, 0);
-            }
+            RotateY();
         }
         else if (Input.GetKeyDown(KeyCode.E)) {
-            transform.Rotate(0, 0, 90);
-            if (CheckShape()) {
-                UpdateGrid();
-            }
-            else {
-                transform.Rotate(0, 0, -90);
-            }
+            RotateZ();
         }
     }
+
+
 
 
 
     // Checks if a new shape can be instansiated
     public void NewShape() {
-        // cast as an integer as the position is a float by default
-       // if ((int)transform.position.y == 0) {
-            enabled = false;
-            FindObjectOfType<Game>().SpawnNewCube();
-      //  }
+        enabled = false;
+        FindObjectOfType<ShapeCreator>().CreateShape();
     }
+
+
     // Checks if the shape is in the grid and whether the position it wants to move to is available
     public bool CheckShape() {
         // cycles through the individual cell's postions, checking if they are in the grid
@@ -173,76 +147,136 @@ public class Shape : MonoBehaviour {
         foreach (Transform cell in transform) {
             Vector3 vPos = Grid.RoundPosition(cell.position);
             Grid.gameArea[(int)vPos.x, (int)vPos.y, (int)vPos.z] = cell;
-         //   Debug.Log("Cube at:" + vPos.x + " " + vPos.y + " " + vPos.z);
         }
     }
 
- 
-    public void MoveShape(string control)
-    {
-        // Right arrow pressed - block moves +1 on the X axis
-        if (control == "Right")
-        {
+
+
+
+
+
+    public Vector3 GetVecPosition() {
+        vectorPosition = transform.position;
+        return vectorPosition;
+    }
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+    /*
+     * 
+     * ---- Drop / Instansiation ----
+     * 
+     */
+
+    public void Drop() {
+        transform.position += new Vector3(0, -1, 0);
+        if (CheckShape()) {
+            UpdateGrid();
+        }
+        else {
+            transform.position += new Vector3(0, 1, 0);
+            Grid.DeleteFullRows();
+            // Grid.DeleteFullX();
+            // Grid.DeleteFullZ();
+            NewShape();
+        }
+    }
+
+    /*
+     * 
+     *  ---- Movement ----
+     * 
+     */
+
+    public void MoveLeft() {
+        transform.position += new Vector3(-1, 0, 0);
+        if (CheckShape()) {
+            UpdateGrid();
+        }
+        else {
             transform.position += new Vector3(1, 0, 0);
-            if (CheckShape())
-            {
-                UpdateGrid();
-            }
-            else
-            {
-                transform.position += new Vector3(-1, 0, 0);
-            }
         }
-        
-
-        // Left arrow is pressed - block moves -1 on the X axis
-        else if (control == "Left")
-        {
-            transform.position += new Vector3(-1, 0, 0);
-            if (CheckShape())
-            {
-                UpdateGrid();
-            }
-            else
-            {
-                transform.position += new Vector3(1, 0, 0);
-            }
-        }
-
-
-        // Down arrow is pressed - block moves +1 on the Z axis
-        else if (control == "Down")
-        {
-            transform.position += new Vector3(0, 0, -1);
-            if (CheckShape())
-            {
-                UpdateGrid();
-            }
-            else
-            {
-                transform.position += new Vector3(0, 0, 1);
-            }
-        }
-
-
-        // Up arrow is pressed - block moves -1 on the Z axis
-        else if (control == "Up")
-        {
-            transform.position += new Vector3(0, 0, 1);
-            if (CheckShape())
-            {
-                UpdateGrid();
-            }
-            else
-            {
-                transform.position += new Vector3(0, 0, -1);
-            }
-        }
-
-
-
     }
 
+    public void MoveRight() {
+        transform.position += new Vector3(1, 0, 0);
+        if (CheckShape()) {
+            UpdateGrid();
+        }
+        else {
+            transform.position += new Vector3(-1, 0, 0);
+        }
+    }
+
+    public void MoveUp() {
+        transform.position += new Vector3(0, 0, 1);
+        if (CheckShape()) {
+            UpdateGrid();
+        }
+        else {
+            transform.position += new Vector3(0, 0, -1);
+        }
+    }
+
+    public void MoveDown() {
+        transform.position += new Vector3(0, 0, -1);
+        if (CheckShape()) {
+            UpdateGrid();
+        }
+        else {
+            transform.position += new Vector3(0, 0, 1);
+        }
+    }
+
+    /*
+     * 
+     *  ---- Rotation ----
+     * 
+     */
+
+    public void RotateX() {
+        transform.Rotate(-90, 0, 0);
+        if (CheckShape()) {
+            UpdateGrid();
+        }
+        else {
+            transform.Rotate(90, 0, 0);
+        }
+    }
+
+    public void RotateY() {
+        transform.Rotate(0, 90, 0);
+        if (CheckShape()) {
+            UpdateGrid();
+        }
+        else {
+            transform.Rotate(0, -90, 0);
+        }
+    }
+
+    public void RotateZ() {
+        transform.Rotate(0, 0, 90);
+        if (CheckShape()) {
+            UpdateGrid();
+        }
+        else {
+            transform.Rotate(0, 0, -90);
+        }
+    }
 
 
 }
