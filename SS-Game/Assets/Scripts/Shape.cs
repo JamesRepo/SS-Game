@@ -22,7 +22,7 @@ public class Shape : MonoBehaviour {
      */
 
     private float fall = 0;
-    private float fallSpeed = 1;
+    private float fallSpeed = 3;
     private const int gridHeight = 15;
     private const int gridWidth = 5;
     private Vector3 vectorPosition;
@@ -190,8 +190,8 @@ public class Shape : MonoBehaviour {
         else {
             transform.position += new Vector3(0, 1, 0);
             Grid.DeleteFullRows();
-            // Grid.DeleteFullX();
-            // Grid.DeleteFullZ();
+            //Grid.DeleteFullX();
+            //Grid.DeleteFullZ();
             NewShape();
         }
     }

@@ -112,9 +112,7 @@ public class Grid : MonoBehaviour {
                 if (CheckRowX(yPos, zPos)) {
                     DeleteRowX(yPos, zPos);
                     DropAllRows(yPos + 1);
-                    if (yPos > 0) {
-                        --yPos;
-                    }
+                    --yPos;
                 }
             }
         }

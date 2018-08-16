@@ -23,13 +23,15 @@ public class ShapeCreator : MonoBehaviour {
     private Vector3 startPosition = new Vector3(2, 9, 2);
     // GameObject object to store instance of a shape
     public GameObject nextShape;
-
+ 
 
     private GameObject previewShape;
 
     private bool gamePlaying = false;
 
     private Vector2 previewShapePosition = new Vector2(-6.5f, 15);
+
+    public int levelSelect;
 
     /*
      * 
@@ -46,7 +48,7 @@ public class ShapeCreator : MonoBehaviour {
      */
 
     private void Start() {
-        ChooseShapes(1);
+        ChooseShapes(levelSelect);
         CreateShape();
     }
 
@@ -58,9 +60,14 @@ public class ShapeCreator : MonoBehaviour {
 
     // Method to determine which selection of shapes will be used, depending on the level being played.
     public string [] ChooseShapes(int level) {
+        if (level == 0) {
+            shapeList = new string[] { "ShapeSmall", "ShapeCorner" };
+        }
+
         if (level == 1) {
             shapeList = new string[] { "ShapeJ", "ShapeL", "ShapeSmall", "ShapeS", "ShapeSquare", "ShapeT", "ShapeZ" };
         }
+
         return shapeList;
     }
 
