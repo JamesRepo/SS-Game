@@ -17,29 +17,24 @@ public class ShapeCreator : MonoBehaviour {
      *
      */
 
-    // Array of the shapes to be used
-    private string[] shapeList;
-    // Vector 3 position for the shapes to be created at
-    private Vector3 startPosition = new Vector3(2, 9, 2);
-    // GameObject object to store instance of a shape
-    public GameObject nextShape;
- 
+    // Arrays of the shapes to be used. Preview shapes are just shapes but without scripts attached. 
+    private readonly string[] shapeList = { "ShapeJ", "ShapeL", "ShapeSmall", "ShapeS", "ShapeSquare", "ShapeT", "ShapeZ" };
+    private readonly string[] previewShapeList = { "ShapeJ-Preview", "ShapeL-Preview", "ShapeSmall-Preview", "ShapeS-Preview", "ShapeSquare-Preview", "ShapeT-Preview", "ShapeZ-Preview" };
 
+    // Position of the shapes start position and its preview. Both read only so cannot be changed. 
+    private readonly Vector3 startPosition = new Vector3(2, 10, 2);
+    private readonly Vector3 previewShapePosition = new Vector3(8, 0, 9);
+
+    // Game Objects for the active and next shape. Next shape is public as it needs to be accessed by other classes.
+    private GameObject nextShape;
     private GameObject previewShape;
 
-    private bool gamePlaying = false;
+    // Integers to store the random selection of the shapes.
+    private int shapeSelection;
+    private int nextShapeSelection;
 
-    private Vector2 previewShapePosition = new Vector2(-6.5f, 15);
-
-    public int levelSelect;
-
-    /*
-     * 
-     *  ==== Constructor ====
-     * 
-     */
-
-    public ShapeCreator() {}
+    // Used to make sure the frst shape is always random.
+    private int counter;
 
     /*
      * 
@@ -47,8 +42,11 @@ public class ShapeCreator : MonoBehaviour {
      * 
      */
 
-    private void Start() {
-        ChooseShapes(levelSelect);
+    private void Start() 
+    {
+        shapeSelection = 0;
+        nextShapeSelection = 0;
+        counter = 0;
         CreateShape();
     }
 
@@ -58,30 +56,30 @@ public class ShapeCreator : MonoBehaviour {
      * 
      */
 
-    // Method to determine which selection of shapes will be used, depending on the level being played.
-    public string [] ChooseShapes(int level) {
-        if (level == 0) {
-            shapeList = new string[] { "ShapeSmall", "ShapeCorner" };
-        }
-
-        if (level == 1) {
-            shapeList = new string[] { "ShapeJ", "ShapeL", "ShapeSmall", "ShapeS", "ShapeSquare", "ShapeT", "ShapeZ" };
-        }
-
-        return shapeList;
-    }
-
-    // Method to create a shape
-    public void CreateShape() {
-
-        // New variable that stores a random number to select a random shape from the array
-        int shapeSelection = Random.Range(0, shapeList.Length);
-
+    /*
+     * Creates the shape and preview shape at their relative starting positions.
+     */
+    public void CreateShape() 
+    {
+        // Counter is used to make sure the first shape is always random. 
+        shapeSelection = counter == 0 ? Random.Range(0, shapeList.Length) : nextShapeSelection;
         // Instansitates a new shape, selected randomly.
-        // It is cast as a Game Object
-        // Instansiate allows us to load a shape that is in the resources folder
+        // Instansiate allows us to load a shape that is in the resources folder.
+        // Quarternion identiy means that there is no rotation.
         nextShape = (GameObject)Instantiate(Resources.Load(shapeList[shapeSelection]), startPosition, Quaternion.identity);
-
+        nextShapeSelection = Random.Range(0, shapeList.Length);
+        if (previewShape != null) 
+        {
+            Destroy(previewShape);
+        }
+        previewShape = (GameObject)Instantiate(Resources.Load(previewShapeList[nextShapeSelection]), previewShapePosition, Quaternion.identity);
+        counter++;
     }
 
+    /*
+     * Get method so the UI controls and Arrow controls can access the shape. 
+     */
+    public GameObject GetNextShape() {
+        return nextShape;
+    }
 }

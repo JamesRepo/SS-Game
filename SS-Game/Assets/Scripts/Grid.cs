@@ -4,16 +4,21 @@ using UnityEngine;
 using UnityEngine.UI;
 
 public class Grid : MonoBehaviour {
-
+    
     private const int gridHeight = 15;
     private const int gridWidth = 5;
 
-    public static Transform [,,] gameArea = new Transform [gridWidth, gridHeight, gridWidth];
+    private const int gameOverHeight = 8;
+
+    public static Transform [,,] gameArea;
+
+    public static int numberRowsCleared;
 
 
 	// Use this for initialization
-	void Start () {
-         
+    void Start() {
+        gameArea = new Transform[gridWidth, gridHeight, gridWidth];
+        numberRowsCleared = 0;
 	}
 	
 	// Update is called once per frame
@@ -42,13 +47,14 @@ public class Grid : MonoBehaviour {
                 }
             }
         }
+        numberRowsCleared++;
+        FindObjectOfType<Scoring>().IncrementLevelCounter();
         return true;
     }
 
     // Check row to delete one row
     public static bool CheckRowX(int yPos, int zPos) {
         for (int xPos = 0; xPos < gridWidth; ++xPos) {
-          //  Debug.Log("Posx:" + xPos + ", Posy:" + yPos + ", Posz:" + zPos);
             if (gameArea[xPos, yPos, zPos] == null) {
                 return false;
             } 
@@ -103,6 +109,8 @@ public class Grid : MonoBehaviour {
                 --yPos;
             }
         }
+        FindObjectOfType<Scoring>().RowClearScore(numberRowsCleared);
+        numberRowsCleared = 0;
     }
 
 
@@ -181,5 +189,49 @@ public class Grid : MonoBehaviour {
             DropRowX(i, zPos);
         }
     }
+
+
+
+    public bool CheckGameOver(Shape shape) {
+        for (int xPos = 0; xPos < gridWidth; ++xPos) {
+            for (int zPos = 0; zPos < gridWidth; ++zPos) {
+                foreach (Transform cell in shape.transform) {
+                    Vector3 vPos = RoundPosition(cell.position);
+                    if (vPos.y >= gameOverHeight) {
+                        return true;
+                    }
+                }
+            }
+        }
+        return false;
+    }
+
+    /*
+* Updates the grid with a shape's new position by cycling through its cells again. 
+*/
+    public void UpdateGrid(Shape shape)
+    {
+        // Three for loops to cycle all the positions in the 3D array.
+        for (int x = 0; x < gridWidth; ++x)
+        {
+            for (int y = 0; y < gridHeight; ++y)
+            {
+                for (int z = 0; z < gridWidth; ++z)
+                {
+                    // 
+                    if (gameArea[x, y, z] != null && gameArea[x, y, z].parent == shape.transform)
+                    {
+                        gameArea[x, y, z] = null;
+                    }
+                }
+            }
+        }
+        foreach (Transform cell in shape.transform)
+        {
+            Vector3 vPos = RoundPosition(cell.position);
+            gameArea[(int)vPos.x, (int)vPos.y, (int)vPos.z] = cell;
+        }
+    }
+
 
 }

@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.UI;
+using UnityEngine.SceneManagement;
 
 /*
  * ==== Shape ====
@@ -18,22 +19,14 @@ public class Shape : MonoBehaviour {
     /*
      *
      * ==== Variables ====
+     *  
      * 
      */
 
-    private float fall = 0;
-    private float fallSpeed = 3;
-    private const int gridHeight = 15;
-    private const int gridWidth = 5;
-    private Vector3 vectorPosition;
-
-    /*
-     * 
-     * ==== Constructor ====
-     * 
-     */
-
-    public Shape() {}
+    // Fall counts the amount of seconds till next drop.
+    private float fall;
+    // Counter to slowly increase speed as the game goes on. Static so it does not reset every time there is a new shape.
+    private static float fallSpeed = 3;
 
     /*
      * 
@@ -41,11 +34,14 @@ public class Shape : MonoBehaviour {
      * 
      */
 
-    void Start () {
-		
+    // Start used to initialise the fall time counter and speed. Also repeatedly invokes the speed up method.
+    void Start() {
+        fall = 0;
+        InvokeRepeating("IncreaseSpeed", 2.0f, 2.0f);
 	}
+    // Update checks the drop timer method every frame.
     void Update() {
-        CheckUserInput();
+        DropTimer();
     }
 
     /*
@@ -54,77 +50,38 @@ public class Shape : MonoBehaviour {
      *
      */
 
-
     /* 
-     * Method used to detect User input and perform the relevant action.
-     * These relevant actions are to move the block or rotate it. 
-     * These actions are performed on the downward press of a key by the user. 
+     * Drop timer is the method that keeps track of the time and if the 
+     * shape needs to drop a position on the Y-Axis. 
      */
-    void CheckUserInput() {
-        // Right arrow pressed - block moves +1 on the X axis
-        if (Input.GetKeyDown(KeyCode.RightArrow)) {
-            MoveRight();
-        }
-
-
-        // Left arrow is pressed - block moves -1 on the X axis
-        else if (Input.GetKeyDown(KeyCode.LeftArrow)) {
-            MoveLeft();
-        }
-
-
-        // Down arrow is pressed - block moves +1 on the Z axis
-        else if (Input.GetKeyDown(KeyCode.DownArrow)) {
-            MoveDown();
-        }
-
-
-        // Up arrow is pressed - block moves -1 on the Z axis
-        else if (Input.GetKeyDown(KeyCode.UpArrow)) {
-            MoveUp();
-        }
-
-
-        // Space key is pressed - block moves -1 on the Y axis
-        // This statement also includes a timer to make the block fall without user input
-        else if (Input.GetKeyDown(KeyCode.Space) || Time.time - fall >= fallSpeed) {
+    public void DropTimer() {
+        if (Time.time - fall >= fallSpeed) {
             fall = Time.time;
             Drop();
         }
-
-
-        // Rotation 
-        else if (Input.GetKeyDown(KeyCode.Q)) {
-            RotateX();
-        }
-        else if (Input.GetKeyDown(KeyCode.W)) {
-            RotateY();
-        }
-        else if (Input.GetKeyDown(KeyCode.E)) {
-            RotateZ();
-        }
     }
 
-
-
-
-
-    // Checks if a new shape can be instansiated
+    /*
+     * Checks if a new shape needs to be created.
+     */
     public void NewShape() {
         enabled = false;
         FindObjectOfType<ShapeCreator>().CreateShape();
     }
 
-
-    // Checks if the shape is in the grid and whether the position it wants to move to is available
+    /*
+     * Checks if the shape is within the grid and the position it wants to move to is available.
+     * Cycles through every cell in the shape to do this and so checks if the position is taken,
+     * and then if the position is taken by it's parent shape. 
+     */
     public bool CheckShape() {
-        // cycles through the individual cell's postions, checking if they are in the grid
+        // Cycles through the individual cell's postions, checking if they are in the grid.
         foreach(Transform cell in transform) {
             Vector3 vPos = Grid.RoundPosition(cell.position);
             if(!Grid.CheckGridLimits(vPos)) {
                 return false;
             }
-            // First checks if the position is taken, then if it is taken by its parent 
+            // First checks if the position is taken, then if it is taken by its parent.
             if(Grid.gameArea[(int)vPos.x, (int)vPos.y, (int)vPos.z] != null && Grid.gameArea[(int)vPos.x, (int)vPos.y, (int)vPos.z].parent != transform) {
                 return false;
             }
@@ -132,49 +89,19 @@ public class Shape : MonoBehaviour {
         return true;
     }
 
-    // Updates the game board
+    /*
+     * Updates the grid with a shape's new position by cycling through its cells again. 
+     */
     public void UpdateGrid() {
-        for (int x = 0; x < gridWidth; ++x) {
-            for (int y = 0; y < gridHeight; ++y) {
-                for (int z = 0; z < gridWidth; ++z) {
-                    
-                    if (Grid.gameArea[x, y, z] != null && Grid.gameArea[x, y, z].parent == transform) {
-                        Grid.gameArea[x, y, z] = null;
-                    }
-                }
-            }
-        }
-        foreach (Transform cell in transform) {
-            Vector3 vPos = Grid.RoundPosition(cell.position);
-            Grid.gameArea[(int)vPos.x, (int)vPos.y, (int)vPos.z] = cell;
-        }
+        FindObjectOfType<Grid>().UpdateGrid(this);
     }
 
-
-
-
-
-
-    public Vector3 GetVecPosition() {
-        vectorPosition = transform.position;
-        return vectorPosition;
+    /*
+     * Gradually increases the speed at which the shapes fall. 
+     */
+    public void IncreaseSpeed() {
+        fallSpeed -= 0.001f;
     }
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
 
     /*
      * 
@@ -182,6 +109,24 @@ public class Shape : MonoBehaviour {
      * 
      */
 
+    /*
+     * Called when a shape has reached the bottom or landed on another shape. 
+     * It increments the score, checks if rows can be deleted, checks if 
+     * the shapes have reached the top of the grid and it is game over, and 
+     * creates a new shape. 
+     */
+    public void SuccessDrop() {
+        FindObjectOfType<Scoring>().LandScore();
+        Grid.DeleteFullRows();
+        if (FindObjectOfType<Grid>().CheckGameOver(this)) {
+            FindObjectOfType<UISystem>().PauseGameOver(true);
+        }
+        NewShape();
+    }
+
+    /*
+     * Drop called when a shape drops automatically due to the timer.
+     */
     public void Drop() {
         transform.position += new Vector3(0, -1, 0);
         if (CheckShape()) {
@@ -189,10 +134,30 @@ public class Shape : MonoBehaviour {
         }
         else {
             transform.position += new Vector3(0, 1, 0);
-            Grid.DeleteFullRows();
-            //Grid.DeleteFullX();
-            //Grid.DeleteFullZ();
-            NewShape();
+            SuccessDrop();
+        }
+    }
+
+    /*
+     * Drop Shape is called if the user decides to drop a shape to the 
+     * bottom. 
+     * Uses a for loop. 
+     */
+    public void DropShape() {
+        for (int a = (int)transform.position.y; a > 0; --a) {
+            transform.position += new Vector3(0, -1, 0);
+            if (CheckShape()) {
+                UpdateGrid();
+            }
+            else {
+                transform.position += new Vector3(0, 1, 0);
+                SuccessDrop();
+                break;
+            }
+            if ((int)transform.position.y == 0) {
+                SuccessDrop();
+                break;
+            }
         }
     }
 
@@ -201,7 +166,6 @@ public class Shape : MonoBehaviour {
      *  ---- Movement ----
      * 
      */
-
     public void MoveLeft() {
         transform.position += new Vector3(-1, 0, 0);
         if (CheckShape()) {
@@ -211,7 +175,6 @@ public class Shape : MonoBehaviour {
             transform.position += new Vector3(1, 0, 0);
         }
     }
-
     public void MoveRight() {
         transform.position += new Vector3(1, 0, 0);
         if (CheckShape()) {
@@ -221,7 +184,6 @@ public class Shape : MonoBehaviour {
             transform.position += new Vector3(-1, 0, 0);
         }
     }
-
     public void MoveUp() {
         transform.position += new Vector3(0, 0, 1);
         if (CheckShape()) {
@@ -231,7 +193,6 @@ public class Shape : MonoBehaviour {
             transform.position += new Vector3(0, 0, -1);
         }
     }
-
     public void MoveDown() {
         transform.position += new Vector3(0, 0, -1);
         if (CheckShape()) {
@@ -241,42 +202,42 @@ public class Shape : MonoBehaviour {
             transform.position += new Vector3(0, 0, 1);
         }
     }
-
     /*
      * 
      *  ---- Rotation ----
      * 
      */
-
     public void RotateX() {
-        transform.Rotate(-90, 0, 0);
+        transform.Rotate(Vector3.left, 90, Space.World);
         if (CheckShape()) {
             UpdateGrid();
         }
         else {
-            transform.Rotate(90, 0, 0);
+            transform.Rotate(Vector3.left, -90, Space.World);
+            transform.position = new Vector3(transform.position.x, transform.position.y, 2);
+            RotateX();
         }
     }
-
     public void RotateY() {
-        transform.Rotate(0, 90, 0);
+        transform.Rotate(Vector3.up, -90, Space.World);
         if (CheckShape()) {
             UpdateGrid();
         }
         else {
-            transform.Rotate(0, -90, 0);
+            transform.Rotate(Vector3.up, 90, Space.World);
+            transform.position = new Vector3(2, transform.position.y, 2);
+            RotateY();
         }
     }
-
     public void RotateZ() {
-        transform.Rotate(0, 0, 90);
+        transform.Rotate(Vector3.forward, 90, Space.World);
         if (CheckShape()) {
             UpdateGrid();
         }
         else {
-            transform.Rotate(0, 0, -90);
+            transform.Rotate(Vector3.forward, -90, Space.World);
+            transform.position = new Vector3(2 , transform.position.y, transform.position.z);
+            RotateZ();
         }
     }
-
-
 }
