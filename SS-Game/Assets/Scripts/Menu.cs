@@ -8,7 +8,7 @@ public class Menu : MonoBehaviour {
 
     public Text highScoreMenu;
 
-    private void Start() {
+    public void Start() {
         UpdateHighScore();
     }
 

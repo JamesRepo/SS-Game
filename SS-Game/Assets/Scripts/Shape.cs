@@ -26,7 +26,7 @@ public class Shape : MonoBehaviour {
     // Fall counts the amount of seconds till next drop.
     private float fall;
     // Counter to slowly increase speed as the game goes on. Static so it does not reset every time there is a new shape.
-    private static float fallSpeed = 3;
+    public static float fallSpeed = 3;
 
     /*
      * 
@@ -37,7 +37,7 @@ public class Shape : MonoBehaviour {
     // Start used to initialise the fall time counter and speed. Also repeatedly invokes the speed up method.
     void Start() {
         fall = 0;
-        InvokeRepeating("IncreaseSpeed", 2.0f, 2.0f);
+        InvokeRepeating("IncreaseSpeed", 2.0f, 4.0f);
 	}
     // Update checks the drop timer method every frame.
     void Update() {
@@ -55,8 +55,8 @@ public class Shape : MonoBehaviour {
      * shape needs to drop a position on the Y-Axis. 
      */
     public void DropTimer() {
-        if (Time.time - fall >= fallSpeed) {
-            fall = Time.time;
+        if (Time.timeSinceLevelLoad - fall >= fallSpeed) {
+            fall = Time.timeSinceLevelLoad;
             Drop();
         }
     }
@@ -214,8 +214,6 @@ public class Shape : MonoBehaviour {
         }
         else {
             transform.Rotate(Vector3.left, -90, Space.World);
-            transform.position = new Vector3(transform.position.x, transform.position.y, 2);
-            RotateX();
         }
     }
     public void RotateY() {
@@ -225,8 +223,6 @@ public class Shape : MonoBehaviour {
         }
         else {
             transform.Rotate(Vector3.up, 90, Space.World);
-            transform.position = new Vector3(2, transform.position.y, 2);
-            RotateY();
         }
     }
     public void RotateZ() {
@@ -236,8 +232,6 @@ public class Shape : MonoBehaviour {
         }
         else {
             transform.Rotate(Vector3.forward, -90, Space.World);
-            transform.position = new Vector3(2 , transform.position.y, transform.position.z);
-            RotateZ();
         }
     }
 }
