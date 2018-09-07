@@ -18,8 +18,8 @@ public class ShapeCreator : MonoBehaviour {
      */
 
     // Arrays of the shapes to be used. Preview shapes are just shapes but without scripts attached. 
-    private readonly string[] shapeList = { "ShapeJ", "ShapeL", "ShapeSmall", "ShapeS", "ShapeSquare", "ShapeT", "ShapeZ" };
     private readonly string[] previewShapeList = { "ShapeJ-Preview", "ShapeL-Preview", "ShapeSmall-Preview", "ShapeS-Preview", "ShapeSquare-Preview", "ShapeT-Preview", "ShapeZ-Preview" };
+    private string[] shapeList; 
 
     // Position of the shapes start position and its preview. Both read only so cannot be changed. 
     private readonly Vector3 startPosition = new Vector3(2, 10, 2);
@@ -36,17 +36,20 @@ public class ShapeCreator : MonoBehaviour {
     // Used to make sure the frst shape is always random.
     private int counter;
 
+    // Used to choose training shapes if that is the level played
+    public bool training;
+
     /*
      * 
      *  ==== Unity Functions ====
      * 
      */
 
-    private void Start() 
-    {
+    private void Start() {
         shapeSelection = 0;
         nextShapeSelection = 0;
         counter = 0;
+        shapeList = training ? new string[] { "ShapeJ-Training", "ShapeL-Training", "ShapeSmall-Training", "ShapeS-Training", "ShapeSquare-Training", "ShapeT-Training", "ShapeZ-Training" } : new string[] { "ShapeJ", "ShapeL", "ShapeSmall", "ShapeS", "ShapeSquare", "ShapeT", "ShapeZ" };
         CreateShape();
     }
 
@@ -59,8 +62,7 @@ public class ShapeCreator : MonoBehaviour {
     /*
      * Creates the shape and preview shape at their relative starting positions.
      */
-    public void CreateShape() 
-    {
+    public void CreateShape() {
         // Counter is used to make sure the first shape is always random. 
         shapeSelection = counter == 0 ? Random.Range(0, shapeList.Length) : nextShapeSelection;
         // Instansitates a new shape, selected randomly.

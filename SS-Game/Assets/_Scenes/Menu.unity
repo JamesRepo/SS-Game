@@ -252,7 +252,7 @@ GameObject:
   - component: {fileID: 173301394}
   - component: {fileID: 173301393}
   m_Layer: 5
-  m_Name: Help
+  m_Name: Training
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
@@ -308,7 +308,7 @@ MonoBehaviour:
     m_HorizontalOverflow: 0
     m_VerticalOverflow: 0
     m_LineSpacing: 1
-  m_Text: HELP
+  m_Text: TRAINING
 --- !u!222 &173301394
 CanvasRenderer:
   m_ObjectHideFlags: 0
@@ -478,7 +478,7 @@ GameObject:
   - component: {fileID: 886443419}
   - component: {fileID: 886443418}
   m_Layer: 5
-  m_Name: Help
+  m_Name: Training
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
@@ -543,7 +543,7 @@ MonoBehaviour:
     m_PersistentCalls:
       m_Calls:
       - m_Target: {fileID: 1876019128}
-        m_MethodName: Help
+        m_MethodName: Training
         m_Mode: 1
         m_Arguments:
           m_ObjectArgument: {fileID: 0}

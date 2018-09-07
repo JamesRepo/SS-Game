@@ -93,7 +93,7 @@ GameObject:
   - component: {fileID: 4178850463913748}
   - component: {fileID: 114003102900701314}
   m_Layer: 0
-  m_Name: ShapeLong
+  m_Name: ShapeLong-Training
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
@@ -395,3 +395,4 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 11031a0004ded484d9d2a578fcfb0e27, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  training: 1

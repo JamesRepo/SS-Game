@@ -30,8 +30,7 @@ public class UISystem : MonoBehaviour {
      * 
      */
 
-    void Start()
-    {
+    void Start() {
         isGamePaused = false;
     }
 
@@ -50,13 +49,11 @@ public class UISystem : MonoBehaviour {
      * rotation.
      * 
      */
-    public void UserInput(string action)
-    {
+    public void UserInput(string action) {
         // Gets the shape.
         Shape shape = FindObjectOfType<ShapeCreator>().GetNextShape().GetComponent<Shape>();
         // Switch statement to perform the relevant action.
-        switch (action)
-        {
+        switch (action) {
             // DROP SHAPE
             case "Drop":
                 shape.DropShape();
@@ -89,17 +86,14 @@ public class UISystem : MonoBehaviour {
      * been lost the game over canvas is enabled.
      * Boolean to decide which. 
      */
-    public void PauseGameOver(bool gameOver)
-    {
+    public void PauseGameOver(bool gameOver) {
         Time.timeScale = 0;
         isGamePaused = true;
         gameCanvas.enabled = false;
-        if (gameOver) 
-        {
+        if (gameOver)  {
             gameOverCanvas.enabled = true;
         }
-        else 
-        {
+        else  {
             pauseCanvas.enabled = true;
         }
     }
@@ -109,8 +103,7 @@ public class UISystem : MonoBehaviour {
      * Resumes the game if the play button is pressed. Exact opposite of the
      * pause game method.
      */
-    public void ResumeGame()
-    {
+    public void ResumeGame() {
         Time.timeScale = 1;
         isGamePaused = false;
         pauseCanvas.enabled = false;
@@ -122,8 +115,7 @@ public class UISystem : MonoBehaviour {
      * If the relevant button is pressed then the active scene will be 
      * restarted.
      */
-    public void RestartGame()
-    {
+    public void RestartGame() {
         SceneManager.LoadScene(SceneManager.GetActiveScene().buildIndex);
         Time.timeScale = 1;
         Shape.fallSpeed = 3;
@@ -133,8 +125,7 @@ public class UISystem : MonoBehaviour {
      * Main Menu Method.
      * When the relevant button is pressed the menu scene is loaded.
      */
-    public void GoMainMenu()
-    {
+    public void GoMainMenu() {
         SceneManager.LoadScene("Menu");
     }
 }

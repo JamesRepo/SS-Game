@@ -5,7 +5,7 @@ using UnityEngine.EventSystems;
 
 /*
  * ==== Camera Control ====
- * ---------------
+ * ------------------------
  * This class controls the camera. It allows the camera to be controlled 
  * by the player through touch controls. The player is able to orbit around
  * the grid. 
@@ -14,10 +14,19 @@ using UnityEngine.EventSystems;
  */
 
 public class CameraControl : MonoBehaviour {
-    
-    public Transform target;
 
-    public float zoomDampening = 5.0f;
+    /*
+     * 
+     *  ==== Variables ====
+     * 
+     * 
+     */
+
+    /*
+     * Position of the target the camera will focus on.
+     * Made the play area in the Unity Editor.
+     */
+    public Transform target;
 
     /*
      * == Rotation / Position ==
@@ -47,6 +56,7 @@ public class CameraControl : MonoBehaviour {
      */
     private const float mouseMovementSpeed = 10f;
     private const float touchMovementSpeed = 0.25f;
+    private const float timeDamp = 5.0f;
 
     /*
      * Max angles of rotation for gameplay
@@ -62,13 +72,11 @@ public class CameraControl : MonoBehaviour {
     private const float cameraDistance = 20f;
 
     /*
-     * Swipe Resistance
+     * 
+     *  ==== Unity functions ====
+     * 
      * 
      */
-    private const float swipeRes = 20f;
-    private Vector2 touchStart;
-
-
     // Start used for initialisation 
     void Start() {
         // Initiliase position and rotation to the cameras starting position
@@ -79,11 +87,9 @@ public class CameraControl : MonoBehaviour {
         // Initialise angles of rotation
         xAngle = 0.0f;
         yAngle = 0.0f;
-
         // Store angles. Vector3 right is shorthand for Vector3(1, 0, 0). Up is for Vector3(0, 1, 0)
         xAngle = Vector3.Angle(Vector3.right, transform.right);
         yAngle = Vector3.Angle(Vector3.up, transform.up);
-
     }
 
 
@@ -92,7 +98,10 @@ public class CameraControl : MonoBehaviour {
      * Use LateUpdate as its the camera so we need to track any object that might have moved during update.
      */
     void LateUpdate() {
-
+        /*
+         * Code below is to allow the camera to be controlled by a mouse, so could be used on a computer.
+         * Commented out as won't be used for this build to an iOS device.
+         */
         //// If Left Mouse Button is pressed
         //if (Input.GetMouseButton(0)) {
         //    // Register mouse axis movements and apply speed multiplyer. Save the change of angle in relevant variable 
@@ -110,7 +119,7 @@ public class CameraControl : MonoBehaviour {
         //     * Sets the rotation to a Lerp. With this you put in the starting rotation and the ending rotation and it
         //     * smoothly rotates from one angle to the next. So it doesn't just jut from one angle to another
         //     */
-        //    rotation = Quaternion.Lerp(currentRotation, targetRotation, Time.deltaTime * zoomDampening);
+        //    rotation = Quaternion.Lerp(currentRotation, targetRotation, Time.deltaTime * timeDamp);
         //    // Sets the camera's rotation the Lerp, meaning it will smootly rotate
         //    transform.rotation = rotation;
 
@@ -119,9 +128,9 @@ public class CameraControl : MonoBehaviour {
         //    transform.position = position;
         //}
 
-
-
-
+        /*
+         *  Touch controls
+         */
         // If to register touches, looking for only one touch contact with screen. Also looking to see if the conact has moved
         if (Input.touchCount == 1 && Input.GetTouch(0).phase == TouchPhase.Moved) {
             // Vector 2 to store the change in position since
@@ -133,11 +142,7 @@ public class CameraControl : MonoBehaviour {
             // Does rotation
             targetRotation = Quaternion.Euler(yAngle, xAngle, 0);
             currentRotation = transform.rotation;
-
-            touchStart = Input.mousePosition;
-            float swipeForce = touchposition.x - touchposition.y;
-
-            rotation = Quaternion.Lerp(currentRotation, targetRotation, Time.deltaTime * zoomDampening);
+            rotation = Quaternion.Lerp(currentRotation, targetRotation, Time.deltaTime * timeDamp);
             transform.rotation = rotation;
             // Determines the position of the camera. Mostly used to keep it a certain distance
             position = target.position - (rotation * Vector3.forward * cameraDistance);
@@ -147,7 +152,6 @@ public class CameraControl : MonoBehaviour {
 
     /*
      *  Used to make sure the clamp doesn't screw up.
-     *  Not sure if actually need. Will check at some point. 
      * 
      */
     public float ClampAngle(float angle, float min, float max) {

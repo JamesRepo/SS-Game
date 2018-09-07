@@ -27,6 +27,8 @@ public class Shape : MonoBehaviour {
     private float fall;
     // Counter to slowly increase speed as the game goes on. Static so it does not reset every time there is a new shape.
     public static float fallSpeed = 3;
+    // Variable to determine if training
+    public bool training;
 
     /*
      * 
@@ -37,11 +39,16 @@ public class Shape : MonoBehaviour {
     // Start used to initialise the fall time counter and speed. Also repeatedly invokes the speed up method.
     void Start() {
         fall = 0;
-        InvokeRepeating("IncreaseSpeed", 2.0f, 4.0f);
+        if (!training) {
+            InvokeRepeating("IncreaseSpeed", 6.0f, 6.0f);
+        }
+
 	}
     // Update checks the drop timer method every frame.
     void Update() {
-        DropTimer();
+        if (!training) {
+            DropTimer();
+        }
     }
 
     /*
