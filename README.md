@@ -4,3 +4,5 @@ A fun game designed to improve spatial skills in STEM students. This was made fo
 The game is a 'Tetris-like' game but in three-dimensions.
 
 Built with Unity and C#.
+
+To find the code go: SS-GAME --> ASSETS --> SCRIPTS 
